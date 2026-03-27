@@ -1,0 +1,125 @@
+================================================================================
+        DEPLOY FRONTEND TO CLOUD RUN - COPY THESE COMMANDS
+================================================================================
+
+Run these commands in Google Cloud Shell:
+
+================================================================================
+STEP 1: NAVIGATE AND PULL LATEST CODE (1 minute)
+================================================================================
+
+cd ~/multi-agent_underwriting_system
+git pull
+cd front
+
+================================================================================
+STEP 2: UPDATE NEXT.CONFIG FOR STANDALONE BUILD (30 seconds)
+================================================================================
+
+cat > next.config.mjs << 'EOF'
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL || 'https://underwriting-agent-936988219342.asia-south1.run.app'
+  }
+};
+
+export default nextConfig;
+EOF
+
+================================================================================
+STEP 3: CREATE DOCKERFILE (30 seconds)
+================================================================================
+
+cat > Dockerfile << 'EOF'
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+CMD ["node", "server.js"]
+EOF
+
+================================================================================
+STEP 4: DEPLOY FRONTEND TO CLOUD RUN (10 minutes)
+================================================================================
+
+gcloud run deploy underwriting-frontend \
+  --source . \
+  --platform managed \
+  --region asia-south1 \
+  --allow-unauthenticated \
+  --set-env-vars BACKEND_URL=https://underwriting-agent-936988219342.asia-south1.run.app \
+  --project multiml-agent
+
+✅ WAIT FOR: "Service [underwriting-frontend] deployed successfully"
+
+================================================================================
+STEP 5: GET YOUR FRONTEND URL
+================================================================================
+
+gcloud run services describe underwriting-frontend \
+  --region asia-south1 \
+  --format='value(status.url)'
+
+✅ COPY THIS URL AND OPEN IN BROWSER!
+
+================================================================================
+                              DONE! 🎉
+================================================================================
+
+You now have TWO services on Cloud Run:
+
+1. Backend (Agents):  https://underwriting-agent-936988219342.asia-south1.run.app
+2. Frontend (UI):     https://underwriting-frontend-xxxxx.run.app
+
+Open the FRONTEND URL to see your beautiful UI!
+
+================================================================================
+                            TROUBLESHOOTING
+================================================================================
+
+If deployment fails:
+
+Check build logs:
+gcloud builds list --limit=5
+
+View specific build:
+gcloud builds log BUILD_ID
+
+Check service status:
+gcloud run services describe underwriting-frontend --region asia-south1
+
+View logs:
+gcloud run services logs read underwriting-frontend --region asia-south1
+
+================================================================================
+                              TIMELINE
+================================================================================
+
+- Pull code: 30 seconds
+- Create configs: 1 minute
+- Deploy: 10 minutes
+- Total: ~12 minutes
+
+================================================================================
