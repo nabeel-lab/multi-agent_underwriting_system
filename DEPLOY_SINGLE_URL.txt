@@ -1,0 +1,128 @@
+================================================================================
+     DEPLOY EVERYTHING TO ONE URL - COPY THESE COMMANDS
+================================================================================
+
+This deploys frontend + backend together on ONE Cloud Run service.
+
+================================================================================
+STEP 1: NAVIGATE AND PULL (1 minute)
+================================================================================
+
+cd ~/multi-agent_underwriting_system
+git pull
+
+================================================================================
+STEP 2: UPDATE NEXT.CONFIG (30 seconds)
+================================================================================
+
+cat > front/next.config.mjs << 'EOF'
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',
+};
+
+export default nextConfig;
+EOF
+
+================================================================================
+STEP 3: BUILD FRONTEND LOCALLY IN CLOUD SHELL (3 minutes)
+================================================================================
+
+cd front
+npm install
+npm run build
+cd ..
+
+================================================================================
+STEP 4: CREATE .DOCKERIGNORE (30 seconds)
+================================================================================
+
+cat > .dockerignore << 'EOF'
+.git
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+node_modules
+.next
+.vercel
+*.md
+!README.md
+EOF
+
+================================================================================
+STEP 5: DEPLOY COMBINED SERVICE (10 minutes)
+================================================================================
+
+gcloud run deploy underwriting-agent \
+  --source . \
+  --platform managed \
+  --region asia-south1 \
+  --allow-unauthenticated \
+  --project multiml-agent \
+  --memory 2Gi \
+  --timeout 300
+
+✅ WAIT FOR: "Service [underwriting-agent] deployed successfully"
+
+================================================================================
+STEP 6: GET YOUR URL
+================================================================================
+
+gcloud run services describe underwriting-agent \
+  --region asia-south1 \
+  --format='value(status.url)'
+
+✅ THIS IS YOUR SINGLE URL FOR EVERYTHING!
+
+================================================================================
+                              DONE! 🎉
+================================================================================
+
+You now have ONE URL that serves:
+- Frontend UI at: https://underwriting-agent-xxxxx.run.app/
+- API endpoint at: https://underwriting-agent-xxxxx.run.app/api/run
+
+Open the URL in browser and you'll see your beautiful UI!
+
+================================================================================
+                            TROUBLESHOOTING
+================================================================================
+
+If build fails at npm install:
+
+cd front
+npm install --legacy-peer-deps
+cd ..
+# Then retry deploy
+
+If deployment times out:
+
+gcloud run deploy underwriting-agent \
+  --source . \
+  --platform managed \
+  --region asia-south1 \
+  --allow-unauthenticated \
+  --project multiml-agent \
+  --memory 4Gi \
+  --timeout 600 \
+  --cpu 2
+
+View logs:
+
+gcloud run services logs read underwriting-agent --region asia-south1 --limit=100
+
+================================================================================
+                              TIMELINE
+================================================================================
+
+- Pull code: 1 minute
+- Build frontend: 3 minutes
+- Deploy: 10 minutes
+- Total: ~14 minutes
+
+================================================================================
