@@ -1,0 +1,85 @@
+================================================================================
+           COPY-PASTE THESE COMMANDS IN GOOGLE CLOUD SHELL
+================================================================================
+
+Open Cloud Shell: https://console.cloud.google.com (click >_ icon)
+
+================================================================================
+BLOCK 1: CLONE AND TEST (3 minutes)
+================================================================================
+
+git clone https://github.com/nabeel-lab/multi-agent_underwriting_system.git
+cd multi-agent_underwriting_system
+pip install -r requirements.txt
+cat > underwriting/.env << 'EOF'
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=AIzaSyA62uqbbMY9yHGL5uMV7Am2IEIkucz02DU
+MODEL_NAME=gemini-2.0-flash
+EOF
+python test_local.py
+
+✅ WAIT FOR: "ALL TOOLS WORKING CORRECTLY!" message
+
+================================================================================
+BLOCK 2: ENABLE APIS (2 minutes)
+================================================================================
+
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com aiplatform.googleapis.com secretmanager.googleapis.com
+
+✅ WAIT FOR: "Operation finished successfully"
+
+================================================================================
+BLOCK 3: STORE API KEY (30 seconds)
+================================================================================
+
+echo -n "AIzaSyA62uqbbMY9yHGL5uMV7Am2IEIkucz02DU" | gcloud secrets create GOOGLE_API_KEY --data-file=-
+
+✅ WAIT FOR: "Created secret [GOOGLE_API_KEY]"
+
+IF ERROR "already exists", run this first:
+gcloud secrets delete GOOGLE_API_KEY
+
+================================================================================
+BLOCK 4: DEPLOY TO CLOUD RUN (7 minutes)
+================================================================================
+
+adk deploy cloud_run --project=multiml-agent --region=asia-south1 --service_name=underwriting-agent .
+
+✅ WAIT FOR: "Service [underwriting-agent] deployed successfully"
+✅ YOU'LL SEE: Service URL in the output
+
+================================================================================
+BLOCK 5: GET YOUR URL
+================================================================================
+
+gcloud run services describe underwriting-agent --region=asia-south1 --format='value(status.url)'
+
+✅ COPY THE URL AND OPEN IN BROWSER!
+
+================================================================================
+                              DONE! 🎉
+================================================================================
+
+Your service is live at the URL above.
+
+Test it:
+1. Open URL in browser
+2. See the web UI
+3. Click "Process Application"
+4. Watch 4 agents animate
+5. See final decision card
+
+================================================================================
+                         TROUBLESHOOTING
+================================================================================
+
+View logs:
+gcloud run services logs read underwriting-agent --region=asia-south1 --limit=50
+
+Check service status:
+gcloud run services describe underwriting-agent --region=asia-south1
+
+Redeploy:
+adk deploy cloud_run --project=multiml-agent --region=asia-south1 --service_name=underwriting-agent .
+
+================================================================================

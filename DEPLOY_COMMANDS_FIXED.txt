@@ -1,0 +1,46 @@
+================================================================================
+              YOU'RE AT THIS STEP - RUN THESE COMMANDS NOW
+================================================================================
+
+You already:
+✅ Cloned the repo
+✅ Created the secret
+
+Now run these:
+
+================================================================================
+STEP 1: INSTALL ADK (1 minute)
+================================================================================
+
+pip install google-adk
+
+✅ WAIT FOR: "Successfully installed google-adk"
+
+================================================================================
+STEP 2: DEPLOY (7 minutes)
+================================================================================
+
+adk deploy cloud_run --project=multiml-agent --region=asia-south1 --service_name=underwriting-agent .
+
+✅ WAIT FOR: "Service [underwriting-agent] deployed successfully"
+
+================================================================================
+STEP 3: GET YOUR URL
+================================================================================
+
+gcloud run services describe underwriting-agent --region=asia-south1 --format='value(status.url)'
+
+✅ COPY THE URL AND OPEN IN BROWSER!
+
+================================================================================
+                              THAT'S IT!
+================================================================================
+
+Your service will be live at the URL above.
+
+Timeline:
+- Install ADK: 1 minute
+- Deploy: 7 minutes
+- Total: 8 minutes
+
+================================================================================

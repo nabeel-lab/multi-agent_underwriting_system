@@ -1,0 +1,121 @@
+Create a modern, beautiful insurance underwriting web application UI with these exact requirements:
+
+DESIGN STYLE:
+- Modern, professional insurance/fintech aesthetic
+- Gradient backgrounds (blue to purple)
+- Glass morphism cards with backdrop blur
+- Smooth animations and transitions
+- Mobile responsive
+- Dark mode toggle option
+
+LAYOUT:
+1. Header Section:
+   - Title: "AI-Powered Insurance Underwriting"
+   - Subtitle: "Multi-Agent Risk Assessment with Bias Detection"
+   - Logo placeholder on left
+   - Gradient background
+
+2. Application Form Card:
+   - Title: "Applicant Information"
+   - Input fields (with icons):
+     * Full Name (text input)
+     * Age (number input, 18-65)
+     * Occupation (dropdown: Salaried, Gig Worker, Self Employed, Business Owner)
+     * Monthly Income INR (number input with ₹ symbol)
+     * City (text input with location icon)
+     * Years Employed (number input, 0.5-40, step 0.5)
+     * Past Claims (number input, 0-10)
+   - Large "Process Application" button (gradient, animated on hover)
+   - Pre-fill with sample data: Priya Sharma, 28, Gig Worker, 22000, Hyderabad, 1.5, 0
+
+3. Agent Pipeline Section (shows after clicking Process):
+   - 4 cards that animate in sequence (fade + slide up)
+   - Each card has:
+     * Numbered badge (1-4) with different colors
+     * Agent name as heading
+     * Description text
+     * Loading spinner while processing
+     * Checkmark when complete
+   - Agent 1: Data Harvesting Agent (Blue #3B82F6) - "Enriching applicant data with alternative signals..."
+   - Agent 2: Risk Modelling Agent (Green #10B981) - "Calculating risk score with XGBoost ML model..."
+   - Agent 3: Adversarial Agent (Orange #F59E0B) - "Challenging score for bias and fairness issues..."
+   - Agent 4: Decision Agent (Purple #8B5CF6) - "Synthesizing final underwriting decision..."
+
+4. Final Decision Card (shows after all agents complete):
+   - Large card with shadow and border
+   - Title: "Underwriting Decision"
+   - Left side: Circular risk score gauge
+     * Animated circular progress bar
+     * Color-coded: 0-40 green, 41-70 yellow, 71-100 red
+     * Large number in center
+     * "Risk Score" label below
+   - Approval status badge (APPROVED in green or DECLINED in red)
+   - Right side: Decision details
+     * Monthly Premium (large, bold, with ₹ symbol)
+     * Confidence Level (High/Medium/Low with colored badge)
+     * Plain English Explanation (2-3 sentences, readable font)
+   - Bottom section: Bias Audit Summary
+     * Light gray background box
+     * Icon for security/shield
+     * Summary text
+
+5. Footer:
+   - "Powered by Google ADK & Gemini 2.0"
+   - Links: GitHub, Documentation
+
+FUNCTIONALITY:
+- Form validation (all fields required)
+- "Process Application" button triggers API call to: POST /run with JSON body
+- Show loading state during API call
+- Animate agents one by one (800ms delay between each)
+- Parse API response and display in decision card
+- Handle errors gracefully with toast notifications
+- Reset button to start over
+
+API INTEGRATION:
+- Endpoint: POST /run
+- Request body: JSON with all form fields
+- Response: JSON with structure:
+  {
+    "approved": boolean,
+    "final_risk_score": number,
+    "monthly_premium_inr": number,
+    "plain_english_explanation": string,
+    "bias_audit_summary": string,
+    "confidence_level": string
+  }
+
+ANIMATIONS:
+- Form card: fade in on load
+- Agent cards: stagger animation (each 800ms apart)
+- Decision card: scale up + fade in
+- Risk gauge: animated circular progress
+- Buttons: hover effects with scale
+- Smooth transitions everywhere
+
+COLORS:
+- Primary: Blue #3B82F6
+- Success: Green #10B981
+- Warning: Orange #F59E0B
+- Danger: Red #EF4444
+- Purple: #8B5CF6
+- Background: Gradient from #F3F4F6 to #E5E7EB
+- Cards: White with shadow and subtle border
+
+TECH STACK:
+- React with TypeScript
+- Tailwind CSS for styling
+- Framer Motion for animations
+- Lucide React for icons
+- Recharts for the risk gauge (or custom SVG)
+- Axios for API calls
+
+SPECIAL FEATURES:
+- Add confetti animation on approval
+- Pulse animation on bias flags detected
+- Smooth scroll to decision card
+- Copy decision summary button
+- Download PDF report button (optional)
+- Share result button (optional)
+
+Make it look like a premium SaaS product - modern, clean, professional, and impressive for a hackathon demo.

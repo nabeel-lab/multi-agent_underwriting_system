@@ -1,37 +1,30 @@
 # 🚀 DEPLOY NOW - Copy These Commands
 
-Your GitHub repo: https://github.com/nabeel-lab/multi-agent_underwriting_system.git
+✅ Your code is pushed to GitHub!
+📦 Repo: https://github.com/nabeel-lab/multi-agent_underwriting_system.git
 
 ---
 
-## OPEN CLOUD SHELL
+## STEP 1: OPEN CLOUD SHELL
 
 1. Go to: https://console.cloud.google.com
 2. Make sure "multiml-agent" is selected (top bar)
-3. Click terminal icon (>_) in top-right
-4. Copy-paste the commands below
+3. Click terminal icon (>_) in top-right corner
 
 ---
 
-## COPY-PASTE THESE COMMANDS (One block at a time)
+## STEP 2: COPY-PASTE THESE COMMANDS
 
-### Block 1: Clone and Setup (2 minutes)
+### Block 1: Clone and Test (3 minutes)
 ```bash
-# Clone your repo
 git clone https://github.com/nabeel-lab/multi-agent_underwriting_system.git
 cd multi-agent_underwriting_system
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Create .env file
 cat > underwriting/.env << 'EOF'
 GOOGLE_GENAI_USE_VERTEXAI=FALSE
 GOOGLE_API_KEY=AIzaSyA62uqbbMY9yHGL5uMV7Am2IEIkucz02DU
 MODEL_NAME=gemini-2.0-flash
 EOF
-
-# Test tools
 python test_local.py
 ```
 
